@@ -1,0 +1,25 @@
+---
+# Source: kube-prometheus/templates/exporters/kube-scheduler/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kube-prometheus-kube-scheduler
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.74.0
+    helm.sh/chart: kube-prometheus-9.2.1
+    app.kubernetes.io/component: kube-scheduler
+spec:
+  jobLabel: component
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kube-scheduler
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  endpoints:
+    - port: http-metrics
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token

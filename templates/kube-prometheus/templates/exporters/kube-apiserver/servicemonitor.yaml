@@ -1,0 +1,31 @@
+---
+# Source: kube-prometheus/templates/exporters/kube-apiserver/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kube-prometheus-apiserver
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.74.0
+    helm.sh/chart: kube-prometheus-9.2.1
+    app.kubernetes.io/component: apiserver
+spec:
+  jobLabel: component
+  selector:
+    matchLabels:
+      component: apiserver
+      provider: kubernetes
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+    - port: https
+      scheme: https
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        serverName: kubernetes
+        insecureSkipVerify: true
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token

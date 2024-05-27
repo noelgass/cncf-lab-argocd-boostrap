@@ -1,0 +1,32 @@
+---
+# Source: kube-prometheus/templates/prometheus/networkpolicy.yaml
+# Based on upstream configuration: https://github.com/prometheus-operator/kube-prometheus/commit/ed15614b0a08482caa5cecb82f56356086d96bdf
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: kube-prometheus-prometheus
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.74.0
+    helm.sh/chart: kube-prometheus-9.2.1
+    app.kubernetes.io/component: prometheus
+spec:
+  podSelector:
+    matchLabels:
+      
+      app.kubernetes.io/name: prometheus
+      app.kubernetes.io/component: prometheus
+      prometheus: kube-prometheus-prometheus
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+    - {}
+  ingress:
+    - ports:
+        
+        - port: 9090
+        - port: 8080

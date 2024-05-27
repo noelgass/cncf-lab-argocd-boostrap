@@ -1,0 +1,30 @@
+---
+# Source: kube-prometheus/templates/prometheus-operator/networkpolicy.yaml
+# Based on upstream configuration: https://github.com/prometheus-operator/kube-prometheus/commit/ed15614b0a08482caa5cecb82f56356086d96bdf
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: kube-prometheus-operator
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.74.0
+    helm.sh/chart: kube-prometheus-9.2.1
+    app.kubernetes.io/component: operator
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: kube-prometheus
+      app.kubernetes.io/name: kube-prometheus
+      app.kubernetes.io/component: operator
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+    - {}
+  ingress:
+    
+    - ports:
+        - port: 8080

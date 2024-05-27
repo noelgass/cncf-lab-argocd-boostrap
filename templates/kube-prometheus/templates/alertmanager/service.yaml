@@ -1,0 +1,26 @@
+---
+# Source: kube-prometheus/templates/alertmanager/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-prometheus-alertmanager
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.74.0
+    helm.sh/chart: kube-prometheus-9.2.1
+    app.kubernetes.io/component: alertmanager
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: http
+      port: 9093
+      targetPort: 9093
+  selector:
+    
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/component: alertmanager
+    alertmanager: kube-prometheus-alertmanager

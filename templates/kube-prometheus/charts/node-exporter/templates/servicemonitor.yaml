@@ -1,0 +1,24 @@
+---
+# Source: kube-prometheus/charts/node-exporter/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kube-prometheus-node-exporter
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: node-exporter
+    app.kubernetes.io/version: 1.8.0
+    helm.sh/chart: node-exporter-4.2.4
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: kube-prometheus
+      app.kubernetes.io/name: node-exporter
+  endpoints:
+    - port: metrics
+  namespaceSelector:
+    matchNames:
+    - default

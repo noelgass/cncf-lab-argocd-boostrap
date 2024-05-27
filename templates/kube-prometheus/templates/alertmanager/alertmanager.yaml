@@ -1,0 +1,139 @@
+---
+# Source: kube-prometheus/templates/alertmanager/alertmanager.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  name: kube-prometheus-alertmanager
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.74.0
+    helm.sh/chart: kube-prometheus-9.2.1
+    app.kubernetes.io/component: alertmanager
+spec:
+  replicas: 1
+  serviceAccountName: kube-prometheus-alertmanager
+  image: docker.io/bitnami/alertmanager:0.27.0-debian-12-r10
+  listenLocal: false
+  externalUrl: http://kube-prometheus-alertmanager.default:9093/
+  portName: "web"
+  paused: false
+  logFormat: logfmt
+  logLevel: info
+  retention: 120h
+  resources:
+    limits:
+      cpu: 150m
+      ephemeral-storage: 1024Mi
+      memory: 192Mi
+    requests:
+      cpu: 100m
+      ephemeral-storage: 50Mi
+      memory: 128Mi
+  routePrefix: "/"
+  securityContext:
+    fsGroup: 1001
+    fsGroupChangePolicy: Always
+    supplementalGroups: []
+    sysctls: []
+  podMetadata:
+    labels:
+      
+      app.kubernetes.io/name: alertmanager
+      app.kubernetes.io/component: alertmanager
+      alertmanager: kube-prometheus-alertmanager
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: kube-prometheus
+                app.kubernetes.io/name: kube-prometheus
+                app.kubernetes.io/component: alertmanager
+            topologyKey: kubernetes.io/hostname
+          weight: 1
+  volumes:
+    - name: empty-dir
+      emptyDir: {}
+  volumeMounts:
+    - name: empty-dir
+      mountPath: /tmp
+      subPath: tmp-dir  
+  containers:
+    ## This monkey patching is needed until the securityContexts are
+    ## directly patchable via the CRD.
+    ## ref: https://github.com/prometheus-operator/prometheus-operator/issues/3947
+    ## currently implemented with strategic merge
+    ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/strategic-merge-patch.md
+    - name: alertmanager
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 1001
+        runAsNonRoot: true
+        runAsUser: 1001
+        seLinuxOptions: {}
+        seccompProfile:
+          type: RuntimeDefault
+      livenessProbe:
+        httpGet:
+          path: /-/healthy
+          port: web
+          scheme: HTTP
+        initialDelaySeconds: 0
+        periodSeconds: 5
+        timeoutSeconds: 3
+        failureThreshold: 120
+        successThreshold: 1
+      readinessProbe:
+        httpGet:
+          path: /-/ready
+          port: web
+          scheme: HTTP
+        initialDelaySeconds: 0
+        periodSeconds: 5
+        timeoutSeconds: 3
+        failureThreshold: 120
+        successThreshold: 1
+    ## This monkey patching is needed until the securityContexts are
+    ## directly patchable via the CRD.
+    ## ref: https://github.com/prometheus-operator/prometheus-operator/issues/3947
+    ## currently implemented with strategic merge
+    ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/strategic-merge-patch.md
+    - name: config-reloader
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsGroup: 1001
+        runAsNonRoot: true
+        runAsUser: 1001
+        seLinuxOptions: {}
+        seccompProfile:
+          type: RuntimeDefault
+      livenessProbe:
+        tcpSocket:
+          port: reloader-web
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 6
+        successThreshold: 1
+      readinessProbe:
+        tcpSocket:
+          port: reloader-web
+        initialDelaySeconds: 15
+        periodSeconds: 20
+        timeoutSeconds: 5
+        failureThreshold: 6
+        successThreshold: 1

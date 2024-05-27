@@ -1,0 +1,27 @@
+---
+# Source: kube-prometheus/charts/node-exporter/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-prometheus-node-exporter
+  namespace: "default"
+  annotations:
+    prometheus.io/scrape: "true"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: node-exporter
+    app.kubernetes.io/version: 1.8.0
+    helm.sh/chart: node-exporter-4.2.4
+    jobLabel: node-exporter
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: metrics
+      port: 9100
+      targetPort: metrics
+      nodePort: null
+  selector:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/name: node-exporter

@@ -1,0 +1,27 @@
+---
+# Source: kube-prometheus/templates/prometheus/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-prometheus-prometheus
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.74.0
+    helm.sh/chart: kube-prometheus-9.2.1
+    app.kubernetes.io/component: prometheus
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: http
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+  selector:
+    
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/component: prometheus
+    prometheus: kube-prometheus-prometheus

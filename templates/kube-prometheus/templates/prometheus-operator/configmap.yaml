@@ -1,0 +1,16 @@
+---
+# Source: kube-prometheus/templates/prometheus-operator/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-prometheus-operator
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.74.0
+    helm.sh/chart: kube-prometheus-9.2.1
+    app.kubernetes.io/component: operator
+data:
+  prometheus-config-reloader: docker.io/bitnami/prometheus-operator:0.74.0-debian-12-r0

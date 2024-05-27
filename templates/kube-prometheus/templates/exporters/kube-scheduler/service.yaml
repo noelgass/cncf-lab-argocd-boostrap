@@ -1,0 +1,24 @@
+---
+# Source: kube-prometheus/templates/exporters/kube-scheduler/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-prometheus-kube-scheduler
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.74.0
+    helm.sh/chart: kube-prometheus-9.2.1
+    app.kubernetes.io/component: kube-scheduler
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 10251
+      protocol: TCP
+      targetPort: 10251
+  selector:
+    component: kube-scheduler

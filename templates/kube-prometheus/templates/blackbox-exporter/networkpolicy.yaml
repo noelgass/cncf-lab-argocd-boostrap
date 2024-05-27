@@ -1,0 +1,29 @@
+---
+# Source: kube-prometheus/templates/blackbox-exporter/networkpolicy.yaml
+# Based on upstream configuration: https://github.com/prometheus-operator/kube-prometheus/commit/a472b19428859c25f83f6cdfd6f4375fc61c7583
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: kube-prometheus-blackbox-exporter
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.74.0
+    helm.sh/chart: kube-prometheus-9.2.1
+    app.kubernetes.io/component: blackbox-exporter
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: kube-prometheus
+      app.kubernetes.io/name: kube-prometheus
+      app.kubernetes.io/component: blackbox-exporter
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+    - {}
+  ingress:
+    - ports:
+        - port: 19115

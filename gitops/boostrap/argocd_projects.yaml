@@ -1,0 +1,37 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: infrastructure
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for infrastructure applications
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: '*' # Allow all destinations - kube-prometheus (default, kube-system)
+    server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+  - group: '*' # Allow all groups
+    kind: '*' # Allow all kinds
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: workloads
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for workload applications
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: '*'
+    server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+  - group: '*' # Allow all groups
+    kind: '*' # Allow all kinds

@@ -1,0 +1,28 @@
+---
+# Source: kube-prometheus/templates/blackbox-exporter/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-prometheus-blackbox-exporter
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.74.0
+    helm.sh/chart: kube-prometheus-9.2.1
+    app.kubernetes.io/component: blackbox-exporter
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  publishNotReadyAddresses: true
+  ports:
+    - name: http
+      port: 19115
+      targetPort: http
+      protocol: TCP
+      nodePort: null
+  selector:
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/component: blackbox-exporter
