@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kafka
+  name: kafka-ui
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -12,7 +12,7 @@ spec:
     server: https://kubernetes.default.svc
   project: workloads
   source: 
-    path: templates/kafka
+    path: templates/kafka-ui
     repoURL: https://github.com/noelgass/cncf-lab-argocd-boostrap.git
     targetRevision: HEAD
     directory:

@@ -12,6 +12,8 @@ helm template <chart-name> <chart> -f <values-file>
 # Examples
 helm template kube-prometheus ./helm/infrastructure/kube-prometheus --include-crds --output-dir ./templates
 helm template kafka ./helm/workloads/kafka  --include-crds --output-dir ./templates
+helm template kafka-ui ./helm/workloads/kafka-ui --include-crds --output-dir ./templates
+
 helm template podinfo ./helm/workloads/podinfo  --include-crds --output-dir ./templates
 ```
 
@@ -24,7 +26,8 @@ helm pull <chart-name> --untar --untardir helm/<app-of-apps>
 
 # Example
 helm pull bitnami/kube-prometheus --destination . --untar --untardir helm/infrastructure
-helm pull oci://ghcr.io/stefanprodan/charts/podinfo --destination . --untar --untardir helm/workloads 
+helm pull oci://ghcr.io/stefanprodan/charts/podinfo --destination . --untar --untardir helm/workloads
+helm pull https://provectus.github.io/kafka-ui-charts --destination . --untar --untardir helm/workloads
 ```
 
 **Download Helm Chart**:
@@ -41,6 +44,10 @@ helm pull bitnami/kube-prometheus
 ```bash
 tar -zxvf <chart-name>.tgz -C helm/<app-of-apps>/<chart-name>
 ```
+
+### Download
+
+Manual download from [kafka-ui-chart](https://github.com/provectus/kafka-ui-charts), because helm pull did not work
 
 ### Questions
 
